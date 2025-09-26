@@ -5,27 +5,28 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Peralatan extends Model
+class Jalan extends Model
 {
     use HasFactory;
 
-    protected $table = 'peralatans';
+    protected $table = 'jalans';
 
     protected $fillable = [
-        'kode_barang',
         'nama_barang',
+        'kode_barang',
         'nomor_register',
-        'merk_tipe',
-        'ukuran_cc',
-        'bahan',
-        'tahun_pembelian',
-        'nomor_pabrik',
-        'nomor_rangka',
-        'nomor_mesin',
-        'nomor_polisi',
-        'nomor_bpkb',
+        'konstruksi',
+        'panjang',
+        'lebar',
+        'luas',
+        'letak',
+        'dokumen_tanggal',
+        'dokumen_nomor',
+        'status_tanah',
+        'kode_tanah',
         'asal_usul',
         'harga',
+        'kondisi',
         'keterangan',
     ];
 }
