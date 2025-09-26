@@ -1,7 +1,7 @@
 @php
-    // Query ini hanya dijalankan satu kali di sini.
+    // Query ini mengambil data ruangan untuk ditampilkan di sidebar.
     // Nanti, pindahkan ini ke AppServiceProvider agar lebih rapi.
-    $roomsForSidebar = \App\Models\Room::orderBy('name', 'asc')->get();
+    $roomForSidebar = \App\Models\Room::orderBy('name', 'asc')->get();
 @endphp
 
 <ul class="navbar-nav bg-gradient-info sidebar sidebar-dark accordion" id="accordionSidebar">
@@ -28,38 +28,76 @@
         Manajemen Data
     </div>
 
-    {{-- PERBAIKAN: Menggabungkan semua menu ruangan menjadi satu dropdown --}}
-    <li class="nav-item {{ request()->is('room*') ? 'active' : '' }}">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRooms"
-            aria-expanded="true" aria-controls="collapseRooms">
+    <li class="nav-item {{ request()->is('room*') || request()->is('inventaris*') ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRoom"
+            aria-expanded="true" aria-controls="collapseRoom">
             <i class="fas fa-fw fa-door-open"></i>
             <span>Manajemen Ruangan</span>
         </a>
         
-        {{-- Logika 'show' agar dropdown otomatis terbuka jika sedang di halaman ruangan --}}
-        <div id="collapseRooms" class="collapse {{ request()->is('room*') ? 'show' : '' }}" aria-labelledby="headingRooms" data-parent="#accordionSidebar">
+        <div id="collapseRoom" class="collapse {{ request()->is('room*') || request()->is('inventaris*') ? 'show' : '' }}" aria-labelledby="headingRoom" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Opsi Ruangan:</h6>
-                
-                {{-- Link statis untuk melihat semua ruangan --}}
-                <a class="collapse-item" href="{{ route('room.index') }}">Daftar Semua Ruangan</a>
-                
-                {{-- Link statis untuk menambah ruangan baru --}}
-                <a class="collapse-item" href="{{ route('room.create') }}">Tambah Ruangan Baru</a>
+                <a class="collapse-item {{ request()->routeIs('room.index') ? 'active' : '' }}" href="{{ route('room.index') }}">
+                    <i class="fas fa-list-ul fa-fw mr-2 text-gray-400"></i>
+                    Daftar Ruangan
+                </a>
+                <a class="collapse-item {{ request()->routeIs('room.create') ? 'active' : '' }}" href="{{ route('room.create') }}">
+                    <i class="fas fa-plus-square fa-fw mr-2 text-gray-400"></i>
+                    Tambah Ruangan
+                </a>
 
-                {{-- PERBAIKAN: Tambahkan pemisah jika ada data ruangan --}}
-                @if($roomsForSidebar->count() > 0)
+                @if($roomForSidebar->count() > 0)
                     <div class="collapse-divider"></div>
-                    <h6 class="collapse-header">Akses Cepat:</h6>
-                    
-                    {{-- Loop untuk menampilkan setiap ruangan sebagai submenu --}}
-                    @foreach ($roomsForSidebar as $room)
-                        <a class="collapse-item" href="{{ route('room.show', $room->id) }}">{{ $room->name }}</a>
-                    @endforeach
+                    <h6 class="collapse-header">Inventaris per Ruangan:</h6>
+                    <div style="max-height: 250px; overflow-y: auto;">
+                        @foreach ($roomForSidebar as $room)
+                            <a class="collapse-item {{ request()->is('room/*/inventaris*') && request()->route('room')->id == $room->id ? 'active' : '' }}" 
+                               href="{{ route('inventaris.index', $room->id) }}">
+                                <i class="fas fa-angle-right fa-fw mr-2 text-gray-400"></i>
+                                {{ $room->name }}
+                            </a>
+                        @endforeach
+                    </div>
                 @endif
             </div>
         </div>
     </li>
+
+    {{-- ============================================= --}}
+    {{-- NAV ITEM - DATA BARANG (DROPDOWN BARU) --}}
+    {{-- ============================================= --}}
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBarang"
+            aria-expanded="true" aria-controls="collapseBarang">
+            <i class="fas fa-fw fa-archive"></i>
+            <span>Data Barang</span>
+        </a>
+        
+        <div id="collapseBarang" class="collapse" aria-labelledby="headingBarang" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Kategori Aset:</h6>
+                {{-- PENTING: href="#" masih placeholder, perlu Anda ganti nanti --}}
+                <a class="collapse-item {{ request()->routeIs('tanah.*') ? 'active' : '' }}" href="{{ route('tanah.index') }}">
+                    <i class="fas fa-layer-group fa-fw mr-2 text-gray-400"></i>
+                    Tanah
+                </a>
+                <a class="collapse-item" href="#">
+                    <i class="fas fa-building fa-fw mr-2 text-gray-400"></i>
+                    Gedung & Bangunan
+                </a>
+                <a class="collapse-item" href="#">
+                    <i class="fas fa-tools fa-fw mr-2 text-gray-400"></i>
+                    Peralatan
+                </a>
+                <a class="collapse-item" href="#">
+                    <i class="fas fa-heart-broken fa-fw mr-2 text-gray-400"></i>
+                    Rusak Berat
+                </a>
+            </div>
+        </div>
+    </li>
+
 
     <hr class="sidebar-divider d-none d-md-block">
 

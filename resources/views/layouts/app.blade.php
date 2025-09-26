@@ -8,7 +8,7 @@
     <meta name="description" content="Sistem Informasi Kependudukan Kecamatan Tawang">
     <meta name="author" content="Tim Pengembang SIDAKEP">
 
-    <title>@yield('title', 'Dashboard') | SIDAKEP</title>
+    <title>@yield('title', 'Dashboard') | SINDI</title>
 
     <link rel="icon" href="{{ asset('img/tsk.png') }}" type="image/png">
     <link href="{{ asset('template/vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">

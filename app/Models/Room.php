@@ -4,24 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany; // Opsional, untuk type-hinting
 
 class Room extends Model
 {
     use HasFactory;
 
-    /**
-     * Nama tabel yang digunakan oleh model.
-     * Opsional jika nama tabel adalah bentuk jamak dari nama model (rooms).
-     */
-    protected $table = 'rooms';
-
-    /**
-     * Atribut yang boleh diisi secara massal (mass assignable).
-     * DIUBAH: 'code' menjadi 'kode_ruangan' agar konsisten.
-     * DIHAPUS: $guard=[] karena sudah menggunakan $fillable.
-     */
     protected $fillable = [
         'name',
         'kode_ruangan',
     ];
+
+    // === TAMBAHKAN METHOD INI ===
+    /**
+     * Mendefinisikan relasi "hasMany" ke model Inventaris.
+     * Satu ruangan bisa memiliki banyak item inventaris.
+     */
+    public function inventaris(): HasMany
+    {
+        return $this->hasMany(Inventaris::class, 'room_id');
+    }
 }
