@@ -2,8 +2,11 @@
     // Query untuk daftar ruangan di menu shortcut TAWANG
     $roomForSidebar = \App\Models\Room::orderBy('name', 'asc')->get();
     
-    // Query untuk daftar K-Room di menu shortcut BARU
+    // Query untuk daftar K-Room di menu shortcut K-ROOM
     $kroomForSidebar = \App\Models\Kroom::orderBy('name', 'asc')->get();
+
+    // Query untuk daftar C-Room di menu shortcut C-ROOM
+    $croomForSidebar = \App\Models\Croom::orderBy('name', 'asc')->get();
 
     // Logika untuk state aktif menu Aset TAWANG
     $isAssetMenuActive = request()->is('room*') || request()->is('tanah*') || request()->is('gedung*') || request()->is('peralatan*') || request()->is('jalan*') || request()->is('rusak*');
@@ -16,7 +19,37 @@
 
     // Logika untuk state aktif menu K-Inventaris K-ROOM
     $isKinventarisMenuActive = request()->is('kinventaris*');
+
+    // Logika untuk state aktif menu Aset C-ROOM
+    $isCroomAssetMenuActive = request()->is('croom*') || request()->is('ctanah*') || request()->is('cgedung*') || request()->is('cperalatan*') || request()->is('cjalan*') || request()->is('crusak*');
+
+    // Logika untuk state aktif menu C-Inventaris C-ROOM
+    $isCinventarisMenuActive = request()->is('cinventaris*');
 @endphp
+
+{{-- ============================================= --}}
+{{-- CSS FIX UNTUK SIDEBAR SCROLLING --}}
+{{-- ============================================= --}}
+<style>
+    #accordionSidebar {
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    /* Styling scrollbar agar lebih bagus (opsional) */
+    #accordionSidebar::-webkit-scrollbar {
+        width: 8px;
+    }
+    #accordionSidebar::-webkit-scrollbar-track {
+        background: rgba(4, 154, 241, 0.1);
+    }
+    #accordionSidebar::-webkit-scrollbar-thumb {
+        background: #858796;
+        border-radius: 1px;
+    }
+    #accordionSidebar::-webkit-scrollbar-thumb:hover {
+        background: #5a5c69;
+    }
+</style>
 
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-info sidebar sidebar-dark accordion" id="accordionSidebar">
@@ -81,7 +114,6 @@
                 <h6 class="collapse-header">Pilih Ruangan:</h6>
                 <div style="max-height: 250px; overflow-y: auto;">
                     @forelse ($roomForSidebar as $room)
-                        {{-- PERBAIKAN: Link diubah agar mengirim parameter filter --}}
                         <a class="collapse-item {{ request('room_id') == $room->id ? 'active' : '' }}" 
                            href="{{ route('inventaris.index', ['room_id' => $room->id]) }}">
                             {{ $room->name }}
@@ -97,7 +129,7 @@
     <!-- Divider -->
     <hr class="sidebar-divider">
 
-    <!-- HEADING DAN MENU BARU UNTUK K-ROOM -->
+    <!-- HEADING DAN MENU UNTUK K-ROOM -->
     <div class="sidebar-heading">
         Data Kahuripan
     </div>
@@ -106,7 +138,7 @@
     <li class="nav-item {{ $isKroomAssetMenuActive && !$isKinventarisMenuActive ? 'active' : '' }}">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseKroomAset" aria-expanded="true" aria-controls="collapseKroomAset">
             <i class="fas fa-fw fa-building"></i>
-            <span>Manajemen Aset </span>
+            <span>Manajemen Aset</span>
         </a>
         <div id="collapseKroomAset" class="collapse {{ $isKroomAssetMenuActive && !$isKinventarisMenuActive ? 'show' : '' }}" aria-labelledby="headingKroomAset" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
@@ -135,7 +167,6 @@
                 <h6 class="collapse-header">Pilih K-Room:</h6>
                 <div style="max-height: 250px; overflow-y: auto;">
                     @forelse ($kroomForSidebar as $kroom)
-                        {{-- PERBAIKAN: Link diubah agar mengirim parameter filter --}}
                         <a class="collapse-item {{ request('kroom_id') == $kroom->id ? 'active' : '' }}" 
                            href="{{ route('kinventaris.index', ['kroom_id' => $kroom->id]) }}">
                             {{ $kroom->name }}
@@ -147,6 +178,60 @@
             </div>
         </div>
     </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
+
+    <!-- HEADING DAN MENU BARU UNTUK C-ROOM -->
+    <div class="sidebar-heading">
+        Data C-Room
+    </div>
+
+    <!-- Nav Item - Manajemen Aset C-Room -->
+    <li class="nav-item {{ $isCroomAssetMenuActive && !$isCinventarisMenuActive ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCroomAset" aria-expanded="true" aria-controls="collapseCroomAset">
+            <i class="fas fa-fw fa-university"></i>
+            <span>Manajemen Aset</span>
+        </a>
+        <div id="collapseCroomAset" class="collapse {{ $isCroomAssetMenuActive && !$isCinventarisMenuActive ? 'show' : '' }}" aria-labelledby="headingCroomAset" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item {{ request()->is('croom*') ? 'active' : '' }}" href="{{ route('croom.index') }}">Daftar C-Room</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Kartu Inventaris Barang:</h6>
+                <a class="collapse-item {{ request()->is('ctanah*') ? 'active' : '' }}" href="{{ route('ctanah.index') }}">KIB A - C-Tanah</a>
+                <a class="collapse-item {{ request()->is('cperalatan*') ? 'active' : '' }}" href="{{ route('cperalatan.index') }}">KIB B - C-Peralatan</a>
+                <a class="collapse-item {{ request()->is('cgedung*') ? 'active' : '' }}" href="{{ route('cgedung.index') }}">KIB C - C-Gedung</a>
+                <a class="collapse-item {{ request()->is('cjalan*') ? 'active' : '' }}" href="{{ route('cjalan.index') }}">KIB D - C-Jalan</a>
+                <div class="collapse-divider"></div>
+                <h6 class="collapse-header">Laporan Kondisi:</h6>
+                <a class="collapse-item {{ request()->is('crusak*') ? 'active' : '' }}" href="{{ route('crusak.index') }}">C-Barang Rusak</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- Nav Item - C-Inventaris Ruangan -->
+    <li class="nav-item {{ $isCinventarisMenuActive ? 'active' : '' }}">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCinventaris" aria-expanded="true" aria-controls="collapseCinventaris">
+            <i class="fas fa-fw fa-boxes"></i>
+            <span>C-Inventaris</span>
+        </a>
+        <div id="collapseCinventaris" class="collapse {{ $isCinventarisMenuActive ? 'show' : '' }}" aria-labelledby="headingCinventaris" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Pilih C-Room:</h6>
+                <div style="max-height: 250px; overflow-y: auto;">
+                    @forelse ($croomForSidebar as $croom)
+                        <a class="collapse-item {{ request('croom_id') == $croom->id ? 'active' : '' }}" 
+                           href="{{ route('cinventaris.index', ['croom_id' => $croom->id]) }}">
+                            {{ $croom->name }}
+                        </a>
+                    @empty
+                        <span class="collapse-item">Belum ada data C-Room</span>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+    </li>
+
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
