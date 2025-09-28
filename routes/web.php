@@ -140,7 +140,7 @@ Route::put('/einventaris/{einventaris}/move', [EinventarisController::class, 'mo
 // routes/web.php
 
 // Untuk Kecamatan Tawang
-Route::resource('kroom', EroomController::class);
+Route::resource('eroom', EroomController::class);
 Route::resource('einventaris', EinventarisController::class)->parameters([
     'einventaris' => 'einventaris'
 ]);

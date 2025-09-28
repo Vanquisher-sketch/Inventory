@@ -4,12 +4,12 @@
             
             {{-- Bagian Kiri: Copyright --}}
             <span class="text-left">
-                Copyright &copy; SIDAKEP {{ date('Y') }}. Dibuat dengan ❤️ di Tasikmalaya.
+                Copyright &copy; SINDI {{ date('Y') }}. Dibuat dengan ❤️ di Tasikmalaya.
             </span>
 
             {{-- Bagian Kanan: Versi Aplikasi (Praktik yang Baik) --}}
             <span class="text-right d-none d-sm-inline-block">
-                Versi {{ env('APP_VERSION', '1.9.0') }}
+                Versi {{ env('APP_VERSION', '2.0.0') }}
             </span>
 
         </div>
