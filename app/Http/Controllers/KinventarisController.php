@@ -27,7 +27,7 @@ class KinventarisController extends Controller
         }
 
         // Ambil hasil query kinventaris (ini adalah collection, untuk ditampilkan di tabel)
-        $kinventarisItems = $query->latest()->get();
+        $kinventarissItems = $query->latest()->get();
         
         // Ambil semua ruangan (ini adalah collection, untuk dropdown filter)
         $krooms = Kroom::orderBy('name')->get();
@@ -72,16 +72,16 @@ class KinventarisController extends Controller
     /**
      * Menampilkan detail satu item kinventaris.
      */
-    public function show(Kinventaris $kinventari)
+    public function show(Kinventaris $kinventaris)
     {
-        // Variabel $kinventari sudah otomatis diambil dari database berkat Route Model Binding
+        // Variabel $kinventaris sudah otomatis diambil dari database berkat Route Model Binding
         return view('pages.kinventaris.show', compact('kinventari'));
     }
 
     /**
      * Menampilkan form untuk mengedit kinventaris.
      */
-    public function edit(Kinventaris $kinventari)
+    public function edit(Kinventaris $kinventaris)
     {
         $krooms = Kroom::orderBy('name')->get();
         return view('pages.kinventaris.edit', compact('kinventari', 'krooms'));
@@ -90,7 +90,7 @@ class KinventarisController extends Controller
     /**
      * Memperbarui data kinventaris di database.
      */
-    public function update(Request $request, Kinventaris $kinventari)
+    public function update(Request $request, Kinventaris $kinventaris)
     {
         $validatedData = $request->validate([
             'kroom_id' => 'required|exists:krooms,id',
@@ -98,14 +98,14 @@ class KinventarisController extends Controller
             'merk_model' => 'nullable|string|max:255',
             'bahan' => 'nullable|string|max:255',
             'tahun_pembelian' => 'nullable|digits:4',
-            'kode_barang' => 'required|string|max:255|unique:kinventaris,kode_barang,' . $kinventari->id,
+            'kode_barang' => 'required|string|max:255|unique:kinventaris,kode_barang,' . $kinventaris->id,
             'jumlah' => 'required|integer|min:0',
             'harga_beli' => 'required|integer|min:0',
             'kondisi' => 'required|string|in:B,KB,RB',
             'keterangan' => 'nullable|string',
         ]);
 
-        $kinventari->update($validatedData);
+        $kinventaris->update($validatedData);
 
         return redirect()->route('kinventaris.index')->with('success', 'Data K-Inventaris berhasil diubah.');
     }
@@ -113,22 +113,22 @@ class KinventarisController extends Controller
     /**
      * Menghapus data kinventaris dari database.
      */
-    public function destroy(Kinventaris $kinventari)
+    public function destroy(Kinventaris $kinventaris)
     {
-        $kinventari->delete();
+        $kinventaris->delete();
         return redirect()->route('kinventaris.index')->with('success', 'Data K-Inventaris berhasil dihapus.');
     }
 
     /**
      * Method custom untuk memindahkan item kinventaris ke ruangan lain.
      */
-    public function move(Request $request, Kinventaris $kinventari)
+    public function move(Request $request, Kinventaris $kinventaris)
     {
         $request->validate([
             'new_kroom_id' => 'required|exists:krooms,id',
         ]);
 
-        $kinventari->update(['kroom_id' => $request->new_kroom_id]);
+        $kinventaris->update(['kroom_id' => $request->new_kroom_id]);
 
         return redirect()->back()->with('success', 'Barang berhasil dipindahkan ke K-Room baru.');
     }

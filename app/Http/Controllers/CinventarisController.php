@@ -19,7 +19,7 @@ class CinventarisController extends Controller
             $selectedCroom = Croom::find($request->croom_id);
         }
 
-        $cinventarisItems = $query->latest()->get();
+        $cinventarissItems = $query->latest()->get();
         $crooms = Croom::orderBy('name')->get();
 
         return view('pages.cinventaris.index', compact('cinventarisItems', 'crooms', 'selectedCroom'));
@@ -50,31 +50,31 @@ class CinventarisController extends Controller
         return redirect()->route('cinventaris.index')->with('success', 'Data C-Inventaris berhasil ditambahkan.');
     }
 
-    public function edit(Cinventaris $cinventari)
+    public function edit(Cinventaris $cinventaris)
     {
         $crooms = Croom::orderBy('name')->get();
         return view('pages.cinventaris.edit', compact('cinventari', 'crooms'));
     }
 
-    public function update(Request $request, Cinventaris $cinventari)
+    public function update(Request $request, Cinventaris $cinventaris)
     {
         $validatedData = $request->validate([
             'croom_id' => 'required|exists:crooms,id',
             'nama_barang' => 'required|string|max:255',
-            'kode_barang' => 'required|string|max:255|unique:cinventaris,kode_barang,' . $cinventari->id,
+            'kode_barang' => 'required|string|max:255|unique:cinventaris,kode_barang,' . $cinventaris->id,
             'jumlah' => 'required|integer|min:0',
             'harga_beli' => 'required|integer|min:0',
             'kondisi' => 'required|string|in:B,KB,RB',
             'keterangan' => 'nullable|string',
         ]);
 
-        $cinventari->update($validatedData);
+        $cinventaris->update($validatedData);
         return redirect()->route('cinventaris.index')->with('success', 'Data C-Inventaris berhasil diubah.');
     }
 
-    public function destroy(Cinventaris $cinventari)
+    public function destroy(Cinventaris $cinventaris)
     {
-        $cinventari->delete();
+        $cinventaris->delete();
         return redirect()->route('cinventaris.index')->with('success', 'Data C-Inventaris berhasil dihapus.');
     }
 }
